@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Collectible
   - Enemy
+  - Ground
+  - Win
+  - GameOver
+  - Inimigo
+  - BalaInimigo
   layers:
   - Default
   - TransparentFX
