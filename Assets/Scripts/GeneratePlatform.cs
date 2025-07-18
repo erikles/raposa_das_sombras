@@ -37,5 +37,8 @@ public class GeneratePlatform : MonoBehaviour
         Vector3 winPosition = platformPosition;
         winPosition.y += 2f;
         Instantiate(platformWin, winPosition, Quaternion.identity);
+
+        // Chama a função para contar os coletáveis na cena
+        PermanentUI.perm.CountGemsInScene();
     }
 }

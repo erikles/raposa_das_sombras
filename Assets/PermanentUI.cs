@@ -78,4 +78,11 @@ public class PermanentUI : MonoBehaviour
         gems = 0;
         UpdateGemText();
     }
+
+    // Função pública para contar os coletáveis na cena atual
+    public void CountGemsInScene()
+    {
+        totalGemsInLevel = GameObject.FindGameObjectsWithTag("Collectible").Length;
+        UpdateGemText();
+    }
 }
