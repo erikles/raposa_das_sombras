@@ -3,87 +3,102 @@ using UnityEngine.SceneManagement;
 
 public class PlayerJump : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] float speed = 5f;
-    Rigidbody2D rb;
-    [SerializeField] float jumpForce = 500f;
-    Animator animator;
-    SpriteRenderer spriteRenderer; // Adicione esta linha
+    [SerializeField] float jumpForce = 15f;
 
-    [SerializeField] private GameObject CanvasGameOver;
+    [Header("Components")]
     [SerializeField] private AudioSource jumpAudio;
     [SerializeField] private AudioSource gemAudio;
+    
+    [Header("Game Control")]
+    [SerializeField] private GeneratePlatform platformGenerator;
+    [SerializeField] private GameObject CanvasGameOver;
+    [SerializeField] private float startDelay = 1.5f; // NOVO: Controle o atraso pelo Inspector!
+    
+    private Rigidbody2D rb;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
 
+    private bool isGameStarted = false;
+    private float originalGravityScale;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // Adicione esta linha
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        originalGravityScale = rb.gravityScale;
+        rb.gravityScale = 0;
+        rb.velocity = Vector2.zero;
+
+        transform.position = platformGenerator.startPlatformPosition + new Vector3(0, 0.5f, 0);
+
+        // MELHORIA: Chama o início automático com o atraso definido no Inspector.
+        Invoke(nameof(StartGame), startDelay); 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        gameObject.transform.Translate(moveHorizontal * speed * Time.deltaTime, 0, 0);
+        // Se o jogo não começou, não permite controle.
+        if (!isGameStarted)
+        {
+            return; 
+        }
 
-        // Espelha o sprite dependendo da direção
+        // Lógica de movimento (só roda depois do jogo começar)
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveHorizontal * speed, rb.velocity.y);
+        UpdateSpriteDirection(moveHorizontal);
+        animator.SetBool("run", moveHorizontal != 0);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            pular();
+        }
+
+        if (rb.velocity.y < -0.1f)
+        {
+            animator.SetTrigger("Caindo");
+            animator.SetBool("Idle", false);
+        }
+    }
+    
+    void StartGame()
+    {
+        isGameStarted = true;
+        rb.gravityScale = originalGravityScale;
+        pular(); // O primeiro pulo automático!
+    }
+
+    public void pular()
+    {
+        jumpAudio.Play();
+        rb.velocity = new Vector2(rb.velocity.x, 0);
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        animator.SetTrigger("Pular");
+    }
+
+    private void UpdateSpriteDirection(float moveHorizontal)
+    {
         if (moveHorizontal > 0)
             spriteRenderer.flipX = false;
         else if (moveHorizontal < 0)
             spriteRenderer.flipX = true;
-
-        animator.SetBool("run", moveHorizontal != 0);
-
-        // Detecta se está caindo
-        if (rb.velocity.y < -0.1f)
-        {
-            animator.SetTrigger("Caindo");
-            animator.SetBool("Idle", false); 
-        }
     }
 
-    
-    public void pular()
-    {
-        jumpAudio.Play();
-        rb.AddForce(Vector2.up * jumpForce);
-        animator.SetTrigger("Pular"); // Inicia a animação de pulo
-    }
-
+    // ... (O resto das suas funções: OnTriggerEnter2D, OnCollisionEnter2D, etc., continuam iguais) ...
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("GameOver") || collision.gameObject.CompareTag("BalaInimigo"))
         {
-            Debug.Log("Game Over");
-            animator.SetTrigger("GameOver");
-            rb.gravityScale = 0;
-            //CanvasGameOver.SetActive(true);
-            rb.velocity = Vector2.zero;
-
-            // Destroi todos os inimigos
-            GameObject[] inimigos = GameObject.FindGameObjectsWithTag("Inimigo");
-            foreach (GameObject inimigo in inimigos)
-            {
-                Destroy(inimigo);
-            }
-
-            // Destroi todas as balas do inimigo
-            GameObject[] balas = GameObject.FindGameObjectsWithTag("BalaInimigo");
-            foreach (GameObject bala in balas)
-            {
-                Destroy(bala);
-            }
-
-            StartCoroutine(PausarJogoAposDelay(2f));
+            HandleGameOver();
         }
         else if (collision.tag == "Collectible")
         {
-            gemAudio.Play(); // O som toca
-            Destroy(collision.gameObject); // O coletável some
-            
-            // Apenas chame esta função. O PermanentUI faz o resto.
+            gemAudio.Play();
+            Destroy(collision.gameObject);
             PermanentUI.perm.AddGem();
         }
     }
@@ -92,27 +107,48 @@ public class PlayerJump : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Win"))
         {
-            Debug.Log("Win");
-            animator.SetBool("Idle", true);
-
-            // Destroi todos os inimigos
-            GameObject[] inimigos = GameObject.FindGameObjectsWithTag("Inimigo");
-            foreach (GameObject inimigo in inimigos)
-            {
-                Destroy(inimigo);
-            }
-
-            // Destroi todas as balas do inimigo
-            GameObject[] balas = GameObject.FindGameObjectsWithTag("BalaInimigo");
-            foreach (GameObject bala in balas)
-            {
-                Destroy(bala);
-            }
-            // Adicione aqui outras ações de vitória, se necessário
+            HandleWin();
         }
     }
 
-    private System.Collections.IEnumerator PausarJogoAposDelay(float delay)
+    void HandleGameOver()
+    {
+        Debug.Log("Game Over");
+        animator.SetTrigger("GameOver");
+        rb.simulated = false;
+        rb.velocity = Vector2.zero;
+        ClearEnemiesAndBullets();
+        StartCoroutine(ReloadSceneAfterDelay(2f));
+    }
+
+   void HandleWin()
+{
+    Debug.Log("Win");
+    // Agora o jogador não vai mais parar. Ele ainda pode andar e pular.
+    
+    animator.SetBool("Idle", true); // Podemos manter isso para ele voltar à pose ociosa.
+    ClearEnemiesAndBullets(); // É bom manter isso para limpar a tela.
+
+    // Opcional: Adicione aqui o que deve acontecer ao vencer.
+    // Exemplo: Ativar um painel de vitória.
+    // if (painelDeVitoria != null)
+    // {
+    //     painelDeVitoria.SetActive(true);
+    // }
+}
+    void ClearEnemiesAndBullets()
+    {
+        foreach (GameObject inimigo in GameObject.FindGameObjectsWithTag("Inimigo"))
+        {
+            Destroy(inimigo);
+        }
+        foreach (GameObject bala in GameObject.FindGameObjectsWithTag("BalaInimigo"))
+        {
+            Destroy(bala);
+        }
+    }
+
+    private System.Collections.IEnumerator ReloadSceneAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

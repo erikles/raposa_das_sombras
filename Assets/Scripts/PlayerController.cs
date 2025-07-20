@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,9 +23,10 @@ public class PlayerController : MonoBehaviour
     private float airControl = 0.8f;
     private float hurtForce = 10f;
 
-    // <-- 1. ADICIONE ESTA LINHA para contar os itens para a gaiola
     public int quantidadeColetaveis = 0;
-     
+
+    // <-- ADICIONADO: Variável para controlar se o jogador pode se mover
+    private bool canControl = false;
 
     private void Start()
     {
@@ -37,42 +39,72 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-       if (state != State.hurt)
-       {
+        // <-- ALTERADO: O movimento só é processado se canControl for verdadeiro
+        if (state != State.hurt && canControl)
+        {
             Movement();
-       } 
-       
-       animator.SetInteger("state", (int)state);
-       AnimationState();
+        } 
+      
+        animator.SetInteger("state", (int)state);
+        AnimationState();
+    }
+    
+    // <-- ADICIONADO: Função pública que será chamada pelo evento do Tutorial
+    public void ActivatePlayer()
+    {
+        canControl = true;
+        Debug.Log("Controle do jogador ativado!");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       if (collision.tag == "Collectible")
-       {
-            // <-- 2. ADICIONE ESTA LINHA para incrementar o seu novo contador
+        if (collision.tag == "Collectible")
+        {
             quantidadeColetaveis++;
-
             gemAudio.Play();
             Destroy(collision.gameObject);
             PermanentUI.perm.AddGem();
-       }
-       if (collision.tag == "Enemy")
-       {
-                state = State.hurt;
-                if (collision.gameObject.transform.position.x > transform.position.x) 
-                {
-                    rb.velocity = new Vector2(-hurtForce, hurtForce);
-                }
-                else
-                {
-                    rb.velocity = new Vector2(hurtForce, hurtForce);
-                }
-       }
+        }
+        if (collision.tag == "Enemy")
+        {
+            state = State.hurt;
+            if (collision.gameObject.transform.position.x > transform.position.x) 
+            {
+                rb.velocity = new Vector2(-hurtForce, hurtForce);
+            }
+            else
+            {
+                rb.velocity = new Vector2(hurtForce, hurtForce);
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        if(other.gameObject.tag == "Enemy") 
+        {
+            Enemy enemy = other.gameObject.GetComponent<Enemy>();
+            
+            RaycastHit2D hit = Physics2D.Raycast(coll.bounds.center, Vector2.down, 1.3f, enemyLayer);
+            if (hit.collider != null || state == State.falling)
+            {
+                // ... (lógica de pular no inimigo)
+            }
+            else
+            {
+                // <-- LÓGICA DE MORTE ALTERADA AQUI -->
+                // Em vez de apenas tomar dano, agora vamos reiniciar a fase.
+                // Você pode adicionar um som de morte ou uma animação aqui antes de reiniciar.
+                state = State.hurt; // Mantém a animação de dano se quiser
+                Debug.Log("Jogador Morreu! Reiniciando a fase...");
+
+                // Desativa o controle para evitar movimentos estranhos antes de reiniciar
+                canControl = false; 
+
+                // Chama a função de reiniciar do nosso GameManager
+                GameManager.Instance.ReiniciarFase();
+            }
+        }
         if(other.gameObject.tag == "Enemy") 
         {
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
@@ -105,28 +137,26 @@ public class PlayerController : MonoBehaviour
         bool jumping = Input.GetButtonDown("Jump");
         bool isTouchingGround = coll.IsTouchingLayers(ground);
 
-        if(state != State.hurt) {
-            if (hDirection < 0 && !isTouchingGround)
-            {
-                rb.velocity = new Vector2(-speed*airControl, rb.velocity.y);
-            }
-            else if (hDirection > 0 && !isTouchingGround)
-            {
-                rb.velocity = new Vector2(speed*airControl, rb.velocity.y);
-            }
-            else if (hDirection < 0 && isTouchingGround)
-            {
-                rb.velocity = new Vector2(-speed, rb.velocity.y);
-            }
-            else if (hDirection > 0 && isTouchingGround)
-            {
-                rb.velocity = new Vector2(speed, rb.velocity.y);
-                transform.localScale = new Vector2(1, 1);
-            }
-            else if (hDirection == 0 && isTouchingGround)
-            {
-                rb.velocity = new Vector2(0, rb.velocity.y);
-            }
+        // A verificação `if (state != State.hurt)` foi movida para o Update para englobar todo o método.
+        if (hDirection < 0 && !isTouchingGround)
+        {
+            rb.velocity = new Vector2(-speed * airControl, rb.velocity.y);
+        }
+        else if (hDirection > 0 && !isTouchingGround)
+        {
+            rb.velocity = new Vector2(speed * airControl, rb.velocity.y);
+        }
+        else if (hDirection < 0 && isTouchingGround)
+        {
+            rb.velocity = new Vector2(-speed, rb.velocity.y);
+        }
+        else if (hDirection > 0 && isTouchingGround)
+        {
+            rb.velocity = new Vector2(speed, rb.velocity.y);
+        }
+        else if (hDirection == 0 && isTouchingGround)
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
         }
         
         if (jumping)
@@ -136,11 +166,11 @@ public class PlayerController : MonoBehaviour
                 Jump();
         }
 
-        if (hDirection <0)
+        if (hDirection < 0)
         {
             transform.localScale = new Vector2(-1, 1);
         }
-        else
+        else if (hDirection > 0) // Adicionado 'else if' para não reverter a escala se o input for 0
         {
             transform.localScale = new Vector2(1, 1);
         }
@@ -149,7 +179,7 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         jumpAudio.Play();
-        rb.velocity = new Vector2(rb.velocity.x/2, jumpForce);
+        rb.velocity = new Vector2(rb.velocity.x / 2, jumpForce);
         state = State.jumping;
     }
 

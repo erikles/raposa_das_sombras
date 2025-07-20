@@ -613,7 +613,11 @@ MonoBehaviour:
     type: 3}
   diamondPrefab: {fileID: 8321108719308916532, guid: f263a8f49768c1746b6a6d1ecc9aa051,
     type: 3}
-  numberOfPlatforms: 52
+  numberOfPlatforms: 5
+  columnPositions:
+  - -4
+  - 0
+  - 4
 --- !u!4 &794135397
 Transform:
   m_ObjectHideFlags: 0
@@ -1098,10 +1102,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  jumpForce: 600
-  CanvasGameOver: {fileID: 707132664}
+  jumpForce: 10
   jumpAudio: {fileID: 1276305964}
   gemAudio: {fileID: 1276305965}
+  platformGenerator: {fileID: 794135396}
+  CanvasGameOver: {fileID: 707132664}
+  startDelay: 0.2
 --- !u!82 &1276305964
 AudioSource:
   m_ObjectHideFlags: 0

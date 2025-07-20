@@ -5,7 +5,7 @@ public class Passarinho : MonoBehaviour
     private Rigidbody2D rb;
     
     // AUMENTE ESTE VALOR! Se estava 5, tente 15 ou 20.
-    [SerializeField] private float forcaVoo = 15f; 
+    [SerializeField] private float forcaVoo = 25f; 
 
     void Awake()
     {

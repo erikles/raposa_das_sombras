@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2503634310712405962}
   - component: {fileID: 2503634310712405965}
   - component: {fileID: 6429415814983318938}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bird2 Duck_1_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 242341543
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -8342180980945000597, guid: 336f8a448b26ec2488456871d161fbaf,
     type: 3}

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2153134480325341250}
   - component: {fileID: 2153134480325341251}
   - component: {fileID: 1691997012934209521}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bird3_Egret4_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 242341543
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 8245919463593716314, guid: 9739a8864ff08974997c33ae25109610,
     type: 3}
