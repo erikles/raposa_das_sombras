@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; // 1. Adicionado para gerenciar cenas
 
 public class EagleShot : MonoBehaviour
 {
@@ -35,7 +36,12 @@ public class EagleShot : MonoBehaviour
         // Verifica se o objeto que colidiu tem a tag "Player"
         if (other.CompareTag("Player"))
         {
-            // Destrói este objeto (a bola)
+            // 2. Reinicia a fase atual
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            
+            // A linha abaixo para destruir o objeto se torna opcional, 
+            // pois o recarregamento da cena já vai remover todos os objetos.
+            // Mas podemos manter para garantir que ele suma imediatamente.
             Destroy(this.gameObject);
         }
     }

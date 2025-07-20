@@ -15,15 +15,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource gemAudio;
     [SerializeField] private AudioSource jumpAudio;
 
-
-
-    private enum State {idle, running, jumping, falling, hurt}; //animation states, decides interactions
+    private enum State {idle, running, jumping, falling, hurt};
     private State state = State.idle;
     private int speed = 9;
-    //[SerializeField] private float airControl = 3f;
     private float jumpForce = 25f;
     private float airControl = 0.8f;
     private float hurtForce = 10f;
+
+    // <-- 1. ADICIONE ESTA LINHA para contar os itens para a gaiola
+    public int quantidadeColetaveis = 0;
      
 
     private void Start()
@@ -31,7 +31,6 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         coll = GetComponent<CircleCollider2D>();
-
         ground = LayerMask.GetMask("Ground");
         enemyLayer = LayerMask.GetMask("EnemyLayer");
     }
@@ -39,30 +38,27 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
        if (state != State.hurt)
-        {
+       {
             Movement();
-        } 
-        
-        animator.SetInteger("state", (int)state); //set animation based on enumerator state
-        AnimationState();
-        
+       } 
+       
+       animator.SetInteger("state", (int)state);
+       AnimationState();
     }
 
-
-    //trigger collision
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       // Dentro do seu PlayerController, na colisão:
-        if (collision.tag == "Collectible")
-        {
-            gemAudio.Play(); // O som toca
-            Destroy(collision.gameObject); // O coletável some
-            
-            // Apenas chame esta função. O PermanentUI faz o resto.
+       if (collision.tag == "Collectible")
+       {
+            // <-- 2. ADICIONE ESTA LINHA para incrementar o seu novo contador
+            quantidadeColetaveis++;
+
+            gemAudio.Play();
+            Destroy(collision.gameObject);
             PermanentUI.perm.AddGem();
-        }
-        if (collision.tag == "Enemy") //enemy projectiles
-        {
+       }
+       if (collision.tag == "Enemy")
+       {
                 state = State.hurt;
                 if (collision.gameObject.transform.position.x > transform.position.x) 
                 {
@@ -72,13 +68,11 @@ public class PlayerController : MonoBehaviour
                 {
                     rb.velocity = new Vector2(hurtForce, hurtForce);
                 }
-        }
+       }
     }
 
-    //enemy collision
     private void OnCollisionEnter2D(Collision2D other)
     {
-        
         if(other.gameObject.tag == "Enemy") 
         {
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
@@ -104,16 +98,13 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    /**
-     * Function that controls movement based on input values. 
-     **/
+    
     private void Movement()
     {
         float hDirection = Input.GetAxis("Horizontal");
         bool jumping = Input.GetButtonDown("Jump");
         bool isTouchingGround = coll.IsTouchingLayers(ground);
 
-        //midair movement
         if(state != State.hurt) {
             if (hDirection < 0 && !isTouchingGround)
             {
@@ -123,27 +114,21 @@ public class PlayerController : MonoBehaviour
             {
                 rb.velocity = new Vector2(speed*airControl, rb.velocity.y);
             }
-
-            //moving left
             else if (hDirection < 0 && isTouchingGround)
             {
                 rb.velocity = new Vector2(-speed, rb.velocity.y);
-
             }
-
-            //moving right
             else if (hDirection > 0 && isTouchingGround)
             {
                 rb.velocity = new Vector2(speed, rb.velocity.y);
                 transform.localScale = new Vector2(1, 1);
             }
-            //staying still
             else if (hDirection == 0 && isTouchingGround)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
             }
         }
-        //jumping
+        
         if (jumping)
         {
             RaycastHit2D hit = Physics2D.Raycast(coll.bounds.center, Vector2.down, 0.8f, ground);
@@ -153,27 +138,21 @@ public class PlayerController : MonoBehaviour
 
         if (hDirection <0)
         {
-            transform.localScale = new Vector2(-1, 1); //sets sprite horizontal flip
+            transform.localScale = new Vector2(-1, 1);
         }
         else
         {
             transform.localScale = new Vector2(1, 1);
         }
-        
-        
     }
 
-    
     private void Jump()
     {
         jumpAudio.Play();
         rb.velocity = new Vector2(rb.velocity.x/2, jumpForce);
         state = State.jumping;
     }
-    /**
-     * Function that transitions between animation states as defined in the enumerator
-     * animation is set in Update
-     **/
+
     private void AnimationState()
     {
         if (state == State.jumping)
