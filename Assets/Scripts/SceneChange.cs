@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class SceneChange : MonoBehaviour
 {
 
-    [SerializeField] private string sceneName; //make sure target scene is in build settings
+    [SerializeField] public string sceneName; //make sure target scene is in build settings
 
     [SerializeField] private Button btn;
 

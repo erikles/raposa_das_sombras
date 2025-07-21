@@ -6,7 +6,6 @@ public class GerenciadorGaiola : MonoBehaviour
     [Header("Referências")]
     [SerializeField] private GameObject[] passarinhosPrefabs;
     [SerializeField] private Transform pontoDeSpawn;
-
     private List<GameObject> passarinhosNaGaiola = new List<GameObject>();
     private bool jaForamSoltos = false;
     
@@ -44,24 +43,35 @@ public class GerenciadorGaiola : MonoBehaviour
     {
         if (!jaForamSoltos && other.CompareTag("Player"))
         {
-            PlayerController player = other.GetComponent<PlayerController>();
-            if (player != null)
-            {
-                int numeroParaSoltar = player.quantidadeColetaveis;
-                Debug.Log("Jogador tocou a gaiola com " + numeroParaSoltar + " itens. Soltando pássaros!");
-                
-                SoltarPassaros(numeroParaSoltar);
-                jaForamSoltos = true;
+            int numeroParaSoltar = 0;
 
-                // --- LÓGICA DE DESTRUIÇÃO DA GAIOLA ---
-                // NOVO: Verifica se o número de itens coletados é igual ao total da fase.
-                if (numeroParaSoltar >= totalDeColetaveisNaFase)
+            // Tenta pegar de PlayerController
+            PlayerController playerController = other.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                numeroParaSoltar = playerController.quantidadeColetaveis;
+            }
+            else
+            {
+                // Tenta pegar de PlayerJump
+                PlayerJump playerJump = other.GetComponent<PlayerJump>();
+                if (playerJump != null)
                 {
-                    Debug.Log("Todos os " + totalDeColetaveisNaFase + " itens foram coletados! Destruindo a gaiola.");
-                    // Destrói o objeto da gaiola.
-                    Destroy(this.gameObject); 
+                    numeroParaSoltar = playerJump.quantidadeColetaveis;
                 }
             }
+
+            Debug.Log("Jogador tocou a gaiola com " + numeroParaSoltar + " itens. Soltando pássaros!");
+
+            SoltarPassaros(numeroParaSoltar);
+            jaForamSoltos = true;
+
+            if (numeroParaSoltar >= totalDeColetaveisNaFase)
+            {
+                Debug.Log("Todos os " + totalDeColetaveisNaFase + " itens foram coletados! Destruindo a gaiola.");
+                Destroy(this.gameObject);
+            }
+            
         }
     }
 

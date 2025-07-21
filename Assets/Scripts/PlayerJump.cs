@@ -22,6 +22,7 @@ public class PlayerJump : MonoBehaviour
 
     private bool isGameStarted = false;
     private float originalGravityScale;
+    public int quantidadeColetaveis = 0;
 
     void Start()
     {
@@ -93,6 +94,8 @@ public class PlayerJump : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("GameOver") || collision.gameObject.CompareTag("BalaInimigo"))
         {
+            GameManager.Instance.RegistrarMorte();
+            PermanentUI.perm.AddDeath();
             HandleGameOver();
         }
         else if (collision.tag == "Collectible")
@@ -100,6 +103,7 @@ public class PlayerJump : MonoBehaviour
             gemAudio.Play();
             Destroy(collision.gameObject);
             PermanentUI.perm.AddGem();
+            quantidadeColetaveis++;
         }
     }
 

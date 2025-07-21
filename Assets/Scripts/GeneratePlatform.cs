@@ -4,6 +4,8 @@ public class GeneratePlatform : MonoBehaviour
 {
     [SerializeField] GameObject platformPrefab;
     [SerializeField] GameObject platformWin;
+    [SerializeField] GameObject GaiolaPrefab;
+    [SerializeField] GameObject GoalPrefab;
     [SerializeField] GameObject diamondPrefab;
     [SerializeField] int numberOfPlatforms = 20;
     [SerializeField] bool movePlatforms = true; 
@@ -52,6 +54,14 @@ public class GeneratePlatform : MonoBehaviour
         Vector3 winPosition = platformPosition;
         winPosition.y += 2f;
         Instantiate(platformWin, winPosition, Quaternion.identity);
+        Vector3 GaiolaPosition = winPosition;
+        GaiolaPosition.y += 2f;
+        Instantiate(GaiolaPrefab, GaiolaPosition, Quaternion.identity);
+        Vector3 goalPosition = GaiolaPosition;
+        goalPosition.y -= 1f;
+        goalPosition.x -= 6f; // Centraliza o Goal na plataforma de vitória
+
+        Instantiate(GoalPrefab, goalPosition, Quaternion.identity);
 
         PermanentUI.perm.CountGemsInScene();
     }
