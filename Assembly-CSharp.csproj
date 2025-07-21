@@ -60,6 +60,8 @@
      <Compile Include="Assets\Scripts\CameraJump.cs" />
      <Compile Include="Assets\Scripts\InimigoJump.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
+     <Compile Include="Assets\ColetavelGema.cs" />
+     <Compile Include="Assets\Scripts\UIFimDeJogoController.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

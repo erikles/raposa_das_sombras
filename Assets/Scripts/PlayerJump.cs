@@ -103,6 +103,7 @@ public class PlayerJump : MonoBehaviour
             gemAudio.Play();
             Destroy(collision.gameObject);
             PermanentUI.perm.AddGem();
+            GameManager.Instance.RegistrarGema();
             quantidadeColetaveis++;
         }
     }

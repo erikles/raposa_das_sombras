@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Events; // Necessário para usar UnityEvent
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,10 +8,12 @@ public class GameManager : MonoBehaviour
 
     // Variáveis que persistem entre as cenas
     public bool tutorialJaExibido = false;
-    public int totalMortes = 0; // <-- ADICIONADO: Contador de mortes
+    public int totalMortes = 0;
+    public int totalGemas = 0; // <-- ADICIONADO: Contador de gemas
 
-    // <-- ADICIONADO: Evento para notificar a UI quando as mortes mudarem
+    // Eventos para notificar a UI quando os valores mudarem
     public UnityEvent<int> OnMortesCountChanged;
+    public UnityEvent<int> OnGemasCountChanged; // <-- ADICIONADO
 
     private void Awake()
     {
@@ -29,14 +31,17 @@ public class GameManager : MonoBehaviour
     // Função chamada pelo PlayerController ao morrer
     public void RegistrarMorte()
     {
-        totalMortes++; // Incrementa o contador
+        totalMortes++;
         Debug.Log("Total de mortes: " + totalMortes);
-        
-        Debug.Log("GameManager: Chamada recebida! Registrando morte. Novo total: " + totalMortes);
-    
-
-        // Dispara o evento para avisar a UI para se atualizar
         OnMortesCountChanged?.Invoke(totalMortes);
+    }
+
+    // <-- ADICIONADO: Nova função para ser chamada ao coletar uma gema -->
+    public void RegistrarGema(int quantidade = 1)
+    {
+        totalGemas += quantidade;
+        Debug.Log("Total de gemas: " + totalGemas);
+        OnGemasCountChanged?.Invoke(totalGemas);
     }
 
     public void ReiniciarFase()

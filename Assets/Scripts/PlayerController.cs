@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
     {
         // DEBUG: Vamos ver no console se a colisão está acontecendo.
         Debug.Log("Gema coletada!");
-
+        GameManager.Instance.RegistrarGema();
         quantidadeColetaveis++;
         gemAudio.Play();
         Destroy(collision.gameObject);
