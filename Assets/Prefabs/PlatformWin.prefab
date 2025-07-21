@@ -58,8 +58,8 @@ GameObject:
   - component: {fileID: 281758229790099032}
   - component: {fileID: 281758229790099038}
   - component: {fileID: 281758229790099033}
-  - component: {fileID: 7932557598361370493}
   - component: {fileID: 5963096806837839566}
+  - component: {fileID: 21793999157295070}
   m_Layer: 0
   m_Name: Tilemap
   m_TagString: Win
@@ -75,7 +75,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 281758229790099035}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.3112, y: 0, z: 0}
+  m_LocalPosition: {x: -0.29, y: 0, z: 0}
   m_LocalScale: {x: 0.46545, y: 0.5153, z: 0}
   m_Children: []
   m_Father: {fileID: 281758228489985024}
@@ -333,7 +333,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -342,22 +342,6 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!19719996 &7932557598361370493
-TilemapCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 281758229790099035}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 1
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.03, y: 0}
-  m_MaximumTileChangeCount: 1000
-  m_ExtrusionFactor: 0.00001
 --- !u!251 &5963096806837839566
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -377,6 +361,32 @@ PlatformEffector2D:
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
+--- !u!61 &21793999157295070
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281758229790099035}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 1
+  m_UsedByComposite: 0
+  m_Offset: {x: -1.5230732, y: -0.5188913}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 14.953854, y: 1.0377825}
+  m_EdgeRadius: 0
 --- !u!1 &1217190501498005618
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,8 +398,8 @@ GameObject:
   - component: {fileID: 7088549981507607778}
   - component: {fileID: 8514246454496399237}
   - component: {fileID: 2636651737029425013}
-  - component: {fileID: 3883669960288419678}
   - component: {fileID: 718060672209206196}
+  - component: {fileID: 6420123453224927882}
   m_Layer: 0
   m_Name: Tilemap (1)
   m_TagString: Win
@@ -405,7 +415,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1217190501498005618}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.25, y: -0.02, z: 0}
+  m_LocalPosition: {x: -7.25, y: 0, z: 0}
   m_LocalScale: {x: 0.46545, y: 0.5153, z: 0}
   m_Children: []
   m_Father: {fileID: 281758228489985024}
@@ -663,7 +673,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -672,22 +682,6 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!19719996 &3883669960288419678
-TilemapCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1217190501498005618}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 1
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.03, y: 0}
-  m_MaximumTileChangeCount: 1000
-  m_ExtrusionFactor: 0.00001
 --- !u!251 &718060672209206196
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -707,6 +701,32 @@ PlatformEffector2D:
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
+--- !u!61 &6420123453224927882
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217190501498005618}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 1
+  m_UsedByComposite: 0
+  m_Offset: {x: -1.4849396, y: -0.46722457}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 15.030121, y: 0.93444914}
+  m_EdgeRadius: 0
 --- !u!1001 &6507031305032569375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -814,6 +834,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 281758228489985024}
     m_Modifications:
+    - target: {fileID: 50493984346786769, guid: 818ecb8197d8b2d439626929d1949a52,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 50493984346786771, guid: 818ecb8197d8b2d439626929d1949a52,
         type: 3}
       propertyPath: m_Name

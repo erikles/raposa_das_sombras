@@ -58,7 +58,7 @@ public class PlayerJump : MonoBehaviour
             pular();
         }
 
-        if (rb.velocity.y < -0.1f)
+        if (rb.velocity.y < -0.5f)
         {
             animator.SetTrigger("Caindo");
             animator.SetBool("Idle", false);

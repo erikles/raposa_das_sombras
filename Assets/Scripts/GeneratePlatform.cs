@@ -6,6 +6,7 @@ public class GeneratePlatform : MonoBehaviour
     [SerializeField] GameObject platformWin;
     [SerializeField] GameObject diamondPrefab;
     [SerializeField] int numberOfPlatforms = 20;
+    [SerializeField] bool movePlatforms = true; 
     [SerializeField] private float[] columnPositions = { -2.5f, 0f, 2.5f };
 
     // MELHORIA: Variável pública para que outros scripts saibam onde o jogador deve começar.
@@ -29,7 +30,16 @@ public class GeneratePlatform : MonoBehaviour
             platformPosition.y += Random.Range(1.8f, 2.5f);
             int columnIndex = Random.Range(0, columnPositions.Length);
             platformPosition.x = columnPositions[columnIndex];
-            Instantiate(platformPrefab, platformPosition, Quaternion.identity);
+
+            GameObject platformObj = Instantiate(platformPrefab, platformPosition, Quaternion.identity);
+
+            // Só ativa o movimento se o índice for múltiplo de 3
+            if (i % 3 == 0 && movePlatforms)
+            {
+                Platform platformScript = platformObj.GetComponent<Platform>();
+                if (platformScript != null)
+                    platformScript.move = true;
+            }
 
             if (Random.Range(0, 4) == 0)
             {
