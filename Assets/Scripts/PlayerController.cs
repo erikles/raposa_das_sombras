@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     public int quantidadeColetaveis = 0;
 
     // <-- ADICIONADO: Variável para controlar se o jogador pode se mover
-    private bool canControl = false;
+    private bool canControl = true;
 
     private void Start()
     {
@@ -58,13 +58,18 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Collectible")
-        {
-            quantidadeColetaveis++;
-            gemAudio.Play();
-            Destroy(collision.gameObject);
-            PermanentUI.perm.AddGem();
-        }
+       if (collision.tag == "Collectible")
+    {
+        // DEBUG: Vamos ver no console se a colisão está acontecendo.
+        Debug.Log("Gema coletada!");
+
+        quantidadeColetaveis++;
+        gemAudio.Play();
+        Destroy(collision.gameObject);
+        
+        // CORREÇÃO: Descomente esta linha para que a UI seja atualizada.
+        PermanentUI.perm.AddGem(); 
+    }
         if (collision.tag == "Enemy")
         {
             state = State.hurt;
@@ -97,6 +102,9 @@ public class PlayerController : MonoBehaviour
                 // Você pode adicionar um som de morte ou uma animação aqui antes de reiniciar.
                 state = State.hurt; // Mantém a animação de dano se quiser
                 Debug.Log("Jogador Morreu! Reiniciando a fase...");
+
+                GameManager.Instance.RegistrarMorte(); 
+                PermanentUI.perm.AddDeath();
 
                 // Desativa o controle para evitar movimentos estranhos antes de reiniciar
                 canControl = false; 

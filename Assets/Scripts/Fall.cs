@@ -9,8 +9,11 @@ public class Fall : MonoBehaviour
     {
         if(collision.gameObject.tag == "Player")
         {
-            // Apenas recarregue a cena. 
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            GameManager.Instance.RegistrarMorte(); 
+            PermanentUI.perm.AddDeath();
+            
+           
         }
     }
 }

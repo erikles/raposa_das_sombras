@@ -1,21 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement; // 1. IMPORTANTE: Adicione esta linha!
+using UnityEngine.SceneManagement;
 
 public class PermanentUI : MonoBehaviour
 {
-    // --- Suas Variáveis ---
-    public int gems = 0;
-    public TextMeshProUGUI gemText;
     public static PermanentUI perm;
 
-    // --- Nova Variável ---
+    [Header("Contadores")]
+    public int gems = 0;
+    public int deaths = 0;
+
+    [Header("Referências da UI")]
+    [SerializeField] private TextMeshProUGUI gemText;
+    [SerializeField] private TextMeshProUGUI deathText;
+
     private int totalGemsInLevel;
 
-    // Awake é chamado antes de Start. É o melhor lugar para o padrão Singleton.
     private void Awake()
     {
         if (perm == null)
@@ -29,40 +29,74 @@ public class PermanentUI : MonoBehaviour
         }
     }
 
-    // 2. DETECTAR MUDANÇA DE CENA
-    // OnEnable é chamado quando o objeto se torna ativo
     void OnEnable()
     {
-        // "Inscreve" a função OnSceneLoaded para ser chamada sempre que uma cena carregar
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    // OnDisable é chamado quando o objeto é desativado/destruído
     void OnDisable()
     {
-        // "Cancela a inscrição" para evitar erros
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // 3. FUNÇÃO CHAMADA NO CARREGAMENTO DA CENA
-    // Esta função será executada toda vez que uma nova cena for carregada.
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Conta todos os coletáveis na NOVA cena
-        totalGemsInLevel = GameObject.FindGameObjectsWithTag("Collectible").Length;
-
-        // Zera a contagem de gemas para a nova fase e atualiza o texto
-        ResetForNewLevel();
+        Debug.Log("--- NOVA CENA CARREGADA: " + scene.name + " ---");
+        
+        // Procura e se reconecta aos elementos da UI
+        FindAndConnectUI();
+        
+        // Reseta as gemas e atualiza todos os contadores
+        CountGemsInScene();
+        UpdateDeathText();
     }
     
-    // 4. FUNÇÃO PARA ADICIONAR GEMA
+    // NOVO: Função central para encontrar a UI.
+    private void FindAndConnectUI()
+    {
+        GameObject gemTextObject = GameObject.FindWithTag("GemCounterText");
+        if (gemTextObject != null)
+        {
+            gemText = gemTextObject.GetComponent<TextMeshProUGUI>();
+            Debug.Log("SUCESSO: Texto de Gemas reconectado!");
+        }
+        else
+        {
+            Debug.LogWarning("FALHA: Não foi possível encontrar o objeto com a tag 'GemCounterText'. Verifique a tag e se o objeto está ativo.");
+        }
+
+        GameObject deathTextObject = GameObject.FindWithTag("DeathCounterText");
+        if (deathTextObject != null)
+        {
+            deathText = deathTextObject.GetComponent<TextMeshProUGUI>();
+            Debug.Log("SUCESSO: Texto de Mortes reconectado!");
+        }
+        else
+        {
+            Debug.LogWarning("FALHA: Não foi possível encontrar o objeto com a tag 'DeathCounterText'. Verifique a tag e se o objeto está ativo.");
+        }
+    }
+
     public void AddGem()
     {
         gems++;
         UpdateGemText();
     }
     
-    // 5. ATUALIZA O TEXTO NO FORMATO CORRETO
+    public void AddDeath()
+    {
+        deaths++;
+        Debug.Log("Morte adicionada! Total de mortes agora é: " + deaths);
+        UpdateDeathText();
+    }
+
+    public void CountGemsInScene()
+    {
+        totalGemsInLevel = GameObject.FindGameObjectsWithTag("Collectible").Length;
+        gems = 0;
+        UpdateGemText();
+    }
+    
     private void UpdateGemText()
     {
         if(gemText != null)
@@ -71,18 +105,12 @@ public class PermanentUI : MonoBehaviour
         }
     }
     
-    // Modificamos sua função Reset para se adaptar ao novo sistema
-    // Esta função zera a contagem da fase atual
-    public void ResetForNewLevel()
+    private void UpdateDeathText()
     {
-        gems = 0;
-        UpdateGemText();
-    }
-
-    // Função pública para contar os coletáveis na cena atual
-    public void CountGemsInScene()
-    {
-        totalGemsInLevel = GameObject.FindGameObjectsWithTag("Collectible").Length;
-        UpdateGemText();
+        if(deathText != null)
+        {
+            deathText.text = deaths.ToString(); 
+            Debug.Log("Atualizando texto de mortes na tela para: " + deaths);
+        }
     }
 }

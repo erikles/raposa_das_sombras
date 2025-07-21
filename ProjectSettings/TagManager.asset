@@ -12,6 +12,10 @@ TagManager:
   - Inimigo
   - BalaInimigo
   - Cage
+  - Projectile
+  - DeathZone
+  - GemCounterText
+  - DeathCounterText
   layers:
   - Default
   - TransparentFX

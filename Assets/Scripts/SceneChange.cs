@@ -21,11 +21,10 @@ public class SceneChange : MonoBehaviour
     }
 
     private void NewGame()
-    {
-        if(PermanentUI.perm != null)
-            PermanentUI.perm.ResetForNewLevel();
-        SceneManager.LoadScene(sceneName);
-    }
+{
+    // A linha foi removida. O PermanentUI já reseta sozinho ao carregar a nova cena.
+    SceneManager.LoadScene(sceneName);
+}   
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

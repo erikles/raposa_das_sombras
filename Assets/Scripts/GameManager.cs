@@ -1,34 +1,46 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events; // Necessário para usar UnityEvent
 
 public class GameManager : MonoBehaviour
 {
-    // "Instância" é uma referência estática a si mesmo, permitindo que outros scripts o acessem facilmente.
     public static GameManager Instance { get; private set; }
 
-    // Esta variável vai guardar o estado do tutorial.
+    // Variáveis que persistem entre as cenas
     public bool tutorialJaExibido = false;
+    public int totalMortes = 0; // <-- ADICIONADO: Contador de mortes
+
+    // <-- ADICIONADO: Evento para notificar a UI quando as mortes mudarem
+    public UnityEvent<int> OnMortesCountChanged;
 
     private void Awake()
     {
-        // Este é o padrão Singleton. Garante que apenas UMA instância do GameManager exista.
         if (Instance == null)
         {
             Instance = this;
-            // Esta é a linha mágica: ela impede que este GameObject seja destruído ao carregar uma nova cena.
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            // Se outra instância já existir, esta é destruída para evitar duplicatas.
             Destroy(gameObject);
         }
     }
 
-    // Função para reiniciar a cena atual.
+    // Função chamada pelo PlayerController ao morrer
+    public void RegistrarMorte()
+    {
+        totalMortes++; // Incrementa o contador
+        Debug.Log("Total de mortes: " + totalMortes);
+        
+        Debug.Log("GameManager: Chamada recebida! Registrando morte. Novo total: " + totalMortes);
+    
+
+        // Dispara o evento para avisar a UI para se atualizar
+        OnMortesCountChanged?.Invoke(totalMortes);
+    }
+
     public void ReiniciarFase()
     {
-        // Recarrega a cena que está ativa no momento.
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

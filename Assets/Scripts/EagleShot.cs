@@ -38,6 +38,8 @@ public class EagleShot : MonoBehaviour
         {
             // 2. Reinicia a fase atual
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            GameManager.Instance.RegistrarMorte(); 
+            PermanentUI.perm.AddDeath();
             
             // A linha abaixo para destruir o objeto se torna opcional, 
             // pois o recarregamento da cena já vai remover todos os objetos.

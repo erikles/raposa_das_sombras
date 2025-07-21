@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8511491298337432240}
   - component: {fileID: 4863484947045004444}
   - component: {fileID: -8170058497604312736}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EagleShot
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -137,6 +137,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 7
+  radius: 12
+  lifetime: 5
 --- !u!82 &-8170058497604312736
 AudioSource:
   m_ObjectHideFlags: 0

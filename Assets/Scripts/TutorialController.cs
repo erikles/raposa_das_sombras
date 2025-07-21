@@ -34,7 +34,7 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-    void StartGame()
+     public void StartGame()
     {
         painelTutorial.SetActive(false);
         Time.timeScale = 1f;
